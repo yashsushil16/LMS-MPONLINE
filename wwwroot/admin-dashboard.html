@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+    <title>Admin Dashboard — Library</title>
+    <link rel="stylesheet" href="style.css?v=20260731">
+</head>
+<body class="app-page admin-page">
+    <header class="app-header">
+        <div class="container header-content">
+            <a class="brand" href="/admin-dashboard.html" aria-label="Library home">
+                <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><path d="M7 6.5c3.4-1.2 6.3-.6 9 1.7v17.3c-2.7-2.3-5.6-2.9-9-1.7V6.5Z" fill="currentColor"/><path d="M25 6.5c-3.4-1.2-6.3-.6-9 1.7v17.3c2.7-2.3 5.6-2.9 9-1.7V6.5Z" fill="currentColor" opacity=".6"/></svg></span>
+                <span>Library</span>
+            </a>
+            <nav class="header-nav" aria-label="Dashboard sections">
+                <a href="#catalogue">Books</a>
+                <a href="#students">Students</a>
+                <a href="#librarians">Librarians</a>
+                <a href="#newspapers">Newspapers</a>
+                <a href="#magazines">Magazines</a>
+                <a href="#activity">Activity</a>
+            </nav>
+            <div class="account-actions">
+                <div class="account-pill"><span class="avatar avatar-copper" aria-hidden="true">A</span><span id="userInfo">Library admin</span></div>
+                <button class="btn btn-quiet" type="button" onclick="AuthAPI.logout()">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container dashboard app-main">
+        <section class="dashboard-intro">
+            <div>
+                <p class="eyebrow">Administration</p>
+                <h1>System <span>Dashboard</span></h1>
+                <p>Manage books, students, librarians, newspapers, and magazines from a single control panel.</p>
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="btn btn-primary" onclick="openAddBookModal()"><span aria-hidden="true">＋</span> Add Book</button>
+                <button class="btn btn-quiet" onclick="openUserModal(0)"><span aria-hidden="true">＋</span> Add Student</button>
+                <button class="btn btn-quiet" onclick="openUserModal(1)"><span aria-hidden="true">＋</span> Add Librarian</button>
+            </div>
+        </section>
+
+        <!-- Stats Overview -->
+        <section class="stats-grid" aria-label="Library overview">
+            <article class="stat-card stat-books">
+                <div class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 4.5h5.2v15H5zM13.8 4.5H19v15h-5.2z" stroke="currentColor" stroke-width="1.6"/><path d="M10.2 6.2h3.6v11.6h-3.6z" fill="currentColor" opacity=".3"/></svg></div>
+                <div><p>Books</p><div class="value" id="totalBooks">0</div><span class="stat-caption">Titles in catalogue</span></div>
+            </article>
+            <article class="stat-card stat-members">
+                <div class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="1.6"/><path d="M3.5 19c.7-3 2.5-4.5 5.5-4.5s4.8 1.5 5.5 4.5M16.5 7.5a2.5 2.5 0 0 1 0 5M17 14.5c2.1.3 3.4 1.8 3.8 4.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+                <div><p>Students / Members</p><div class="value" id="totalStudents">0</div><span class="stat-caption">Registered readers</span></div>
+            </article>
+            <article class="stat-card stat-loans">
+                <div class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M7 3.8v3M17 3.8v3M4.5 9.3h15M5.5 5.7h13a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-13a1 1 0 0 1-1-1v-12a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.6"/><path d="m9 14 2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                <div><p>Librarians</p><div class="value" id="totalLibrarians">0</div><span class="stat-caption">Library staff</span></div>
+            </article>
+        </section>
+
+        <!-- Add Book Panel -->
+        <section class="panel add-book-panel" id="add-book">
+            <div class="panel-heading">
+                <div><p class="eyebrow">Collection Care</p><h2>Add New Book</h2><p>Add a new title to the central library catalogue.</p></div>
+                <span class="heading-art" aria-hidden="true"><svg viewBox="0 0 80 80" fill="none"><path d="M22 21h14v40H22zM42 16h16v45H42zM61 29h8v32h-8z" fill="currentColor"/><path d="M17 63h54" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span>
+            </div>
+            <form id="addBookForm" class="book-form">
+                <div class="form-group form-wide"><label for="bookTitle">Book Title</label><input type="text" id="bookTitle" name="title" placeholder="e.g. The Secret Garden" required></div>
+                <div class="form-group"><label for="bookAuthor">Author</label><input type="text" id="bookAuthor" name="author" placeholder="Full name" required></div>
+                <div class="form-group"><label for="bookISBN">ISBN</label><input type="text" id="bookISBN" name="isbn" placeholder="978-0-000000-00-0" required></div>
+                <div class="form-group"><label for="bookCopies">Total Copies</label><input type="number" id="bookCopies" name="totalCopies" placeholder="1" required min="1"></div>
+                <div class="form-group"><label for="bookYear">Published Year</label><input type="number" id="bookYear" name="publishedYear" placeholder="2025" required min="1000"></div>
+                <div class="form-submit"><button type="submit" class="btn btn-primary">Add to Catalogue <span aria-hidden="true">→</span></button></div>
+            </form>
+        </section>
+
+        <!-- Books Catalogue Section -->
+        <section class="panel table-container" id="catalogue">
+            <div class="table-header">
+                <div><p class="eyebrow">Catalogue</p><h2>Books Management</h2></div>
+                <span class="section-note">Books in collection</span>
+            </div>
+            <div id="booksTable"><div class="loading"><span class="loading-mark" aria-hidden="true"></span>Loading books...</div></div>
+        </section>
+
+        <!-- Students Section -->
+        <section class="panel table-container" id="students">
+            <div class="table-header">
+                <div><p class="eyebrow">Members</p><h2>Students</h2></div>
+                <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                    <label class="search-bar" for="studentSearchInput" style="margin: 0;">
+                        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><circle cx="10.5" cy="10.5" r="5.5" stroke="currentColor" stroke-width="1.8"/><path d="m15 15 4.2 4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                        <input type="search" id="studentSearchInput" placeholder="Search by name, email, phone..." autocomplete="off">
+                    </label>
+                    <button class="btn btn-primary btn-small" onclick="openUserModal(0)">Add New Student</button>
+                </div>
+            </div>
+            <div id="studentsTable"><div class="loading"><span class="loading-mark" aria-hidden="true"></span>Loading students...</div></div>
+            <div id="studentsPagination" class="pagination-bar"></div>
+        </section>
+
+        <!-- Librarians Section -->
+        <section class="panel table-container" id="librarians">
+            <div class="table-header">
+                <div><p class="eyebrow">Staff</p><h2>Librarians</h2></div>
+                <button class="btn btn-primary btn-small" onclick="openUserModal(1)">Add New Librarian</button>
+            </div>
+            <div id="librariansTable"><div class="loading"><span class="loading-mark" aria-hidden="true"></span>Loading librarians...</div></div>
+        </section>
+
+        <!-- Newspapers Section -->
+        <section class="panel table-container" id="newspapers">
+            <div class="table-header">
+                <div><p class="eyebrow">Periodicals</p><h2>Newspapers</h2></div>
+                <button class="btn btn-primary btn-small" onclick="openNewspaperModal()">Add Newspaper</button>
+            </div>
+            <div id="newspapersTable"><div class="loading"><span class="loading-mark" aria-hidden="true"></span>Loading newspapers...</div></div>
+        </section>
+
+        <!-- Magazines Section -->
+        <section class="panel table-container" id="magazines">
+            <div class="table-header">
+                <div><p class="eyebrow">Publications</p><h2>Magazines</h2></div>
+                <button class="btn btn-primary btn-small" onclick="openMagazineModal()">Add Magazine</button>
+            </div>
+            <div id="magazinesTable"><div class="loading"><span class="loading-mark" aria-hidden="true"></span>Loading magazines...</div></div>
+        </section>
+
+        <!-- Loan Activity Section -->
+        <section class="panel table-container" id="activity">
+            <div class="table-header">
+                <div><p class="eyebrow">Reading Room</p><h2>Loan Activity</h2></div>
+                <span class="section-note">Borrow & Return transactions</span>
+            </div>
+            <div id="transactionsTable"><div class="loading"><span class="loading-mark" aria-hidden="true"></span>Loading activity...</div></div>
+        </section>
+    </main>
+
+    <!-- Modal: Edit Book -->
+    <div class="modal" id="editBookModal" role="dialog" aria-modal="true" aria-labelledby="editBookTitleLabel">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div><p class="eyebrow">Catalogue Update</p><h2 id="editBookTitleLabel">Edit Book Details</h2></div>
+                <button class="modal-close" type="button" onclick="closeModal('editBookModal')" aria-label="Close dialog">×</button>
+            </div>
+            <form id="editBookForm" class="modal-form">
+                <input type="hidden" id="editBookId">
+                <div class="form-group"><label for="editBookTitle">Book Title</label><input type="text" id="editBookTitle" name="title" required></div>
+                <div class="form-group"><label for="editBookAuthor">Author</label><input type="text" id="editBookAuthor" name="author" required></div>
+                <div class="form-group"><label for="editBookISBN">ISBN</label><input type="text" id="editBookISBN" name="isbn" required></div>
+                <div class="modal-form-grid">
+                    <div class="form-group"><label for="editBookCopies">Total Copies</label><input type="number" id="editBookCopies" name="totalCopies" required min="1"></div>
+                    <div class="form-group"><label for="editBookYear">Published Year</label><input type="number" id="editBookYear" name="publishedYear" required min="1000"></div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-quiet" onclick="closeModal('editBookModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Add / Edit User (Student / Librarian) -->
+    <div class="modal" id="userModal" role="dialog" aria-modal="true" aria-labelledby="userModalTitle">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div><p class="eyebrow" id="userModalEyebrow">Account Details</p><h2 id="userModalTitle">User Account</h2></div>
+                <button class="modal-close" type="button" onclick="closeModal('userModal')" aria-label="Close dialog">×</button>
+            </div>
+            <form id="userForm" class="modal-form">
+                <input type="hidden" id="userId">
+                <input type="hidden" id="userRole">
+                <div class="form-group"><label for="userFullName">Full Name</label><input type="text" id="userFullName" placeholder="e.g. Bob Smith" required></div>
+                <div class="form-group"><label for="userEmail">Email Address</label><input type="email" id="userEmail" placeholder="bob@example.com" required></div>
+                <div class="form-group"><label for="userPhone">Phone Number</label><input type="text" id="userPhone" placeholder="555-0102"></div>
+                <div class="form-group"><label for="userPassword">Password</label><input type="password" id="userPassword" placeholder="Leave empty to keep current password"></div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-quiet" onclick="closeModal('userModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Account</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Add / Edit Newspaper -->
+    <div class="modal" id="newspaperModal" role="dialog" aria-modal="true" aria-labelledby="newspaperModalTitle">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div><p class="eyebrow">Periodical</p><h2 id="newspaperModalTitle">Newspaper Details</h2></div>
+                <button class="modal-close" type="button" onclick="closeModal('newspaperModal')" aria-label="Close dialog">×</button>
+            </div>
+            <form id="newspaperForm" class="modal-form">
+                <input type="hidden" id="newspaperId">
+                <div class="form-group"><label for="npTitle">Title</label><input type="text" id="npTitle" placeholder="e.g. The Daily Times" required></div>
+                <div class="form-group"><label for="npPublisher">Publisher</label><input type="text" id="npPublisher" placeholder="Times Media" required></div>
+                <div class="modal-form-grid">
+                    <div class="form-group"><label for="npLanguage">Language</label><input type="text" id="npLanguage" placeholder="English" required></div>
+                    <div class="form-group"><label for="npCopies">Copies</label><input type="number" id="npCopies" placeholder="5" min="1" required></div>
+                </div>
+                <div class="form-group"><label for="npDate">Publication Date</label><input type="date" id="npDate" required></div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-quiet" onclick="closeModal('newspaperModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Newspaper</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Add / Edit Magazine -->
+    <div class="modal" id="magazineModal" role="dialog" aria-modal="true" aria-labelledby="magazineModalTitle">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div><p class="eyebrow">Publication</p><h2 id="magazineModalTitle">Magazine Details</h2></div>
+                <button class="modal-close" type="button" onclick="closeModal('magazineModal')" aria-label="Close dialog">×</button>
+            </div>
+            <form id="magazineForm" class="modal-form">
+                <input type="hidden" id="magazineId">
+                <div class="form-group"><label for="magTitle">Title</label><input type="text" id="magTitle" placeholder="e.g. National Geographic" required></div>
+                <div class="modal-form-grid">
+                    <div class="form-group"><label for="magCategory">Category</label><input type="text" id="magCategory" placeholder="Science" required></div>
+                    <div class="form-group"><label for="magIssue">Issue Number</label><input type="text" id="magIssue" placeholder="Vol. 24" required></div>
+                </div>
+                <div class="form-group"><label for="magPublisher">Publisher</label><input type="text" id="magPublisher" placeholder="Media Group" required></div>
+                <div class="modal-form-grid">
+                    <div class="form-group"><label for="magYear">Published Year</label><input type="number" id="magYear" placeholder="2025" required min="1900"></div>
+                    <div class="form-group"><label for="magCopies">Copies</label><input type="number" id="magCopies" placeholder="5" min="1" required></div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-quiet" onclick="closeModal('magazineModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Magazine</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js?v=20260730"></script>
+    <script>
+        if (!checkAdminAuth()) window.location.href = '/index.html';
+
+        const userInfo = TokenManager.getUserInfo();
+        document.getElementById('userInfo').textContent = userInfo?.fullName || 'Library Admin';
+
+        let allUsersData = [];
+        let currentPage = 1;
+        const pageSize = 5;
+
+        async function loadDashboard() {
+            try {
+                await Promise.all([
+                    loadStats(),
+                    loadBooks(),
+                    loadUsers(),
+                    loadNewspapers(),
+                    loadMagazines(),
+                    loadTransactions()
+                ]);
+            } catch (error) { UI.showAlert(error.message, 'error'); }
+        }
+
+        async function loadStats() {
+            const [books, users, transactions] = await Promise.all([
+                AdminAPI.getBooks().catch(() => []),
+                AdminAPI.getAllUsers().catch(() => []),
+                AdminAPI.getAllTransactions().catch(() => [])
+            ]);
+
+            const students = users.filter(u => u.role === 1 || u.role === 'User');
+            const librarians = users.filter(u => u.role === 0 || u.role === 'Admin');
+
+            document.getElementById('totalBooks').textContent = books.length || 0;
+            document.getElementById('totalStudents').textContent = students.length || 0;
+            document.getElementById('totalLibrarians').textContent = librarians.length || 0;
+        }
+
+        async function loadBooks() {
+            const container = document.getElementById('booksTable');
+            try {
+                const books = await AdminAPI.getBooks();
+                if (books.length === 0) { UI.showEmptyState('booksTable', 'No books found'); return; }
+                container.innerHTML = `<table><thead><tr><th>ID</th><th>Title</th><th>Author</th><th>ISBN</th><th>Total Copies</th><th>Available</th><th>Year</th><th><span class="sr-only">Actions</span></th></tr></thead><tbody>${books.map(book => `<tr><td class="muted-cell">#${book.id}</td><td class="title-cell">${book.title}</td><td>${book.author}</td><td class="isbn-cell">${book.isbn}</td><td>${book.totalCopies}</td><td><span class="availability ${book.availableCopies > 0 ? 'available' : 'unavailable'}">${book.availableCopies} available</span></td><td>${book.publishedYear}</td><td class="table-actions"><button class="btn btn-small btn-quiet" onclick="openEditModal(${book.id})">Edit</button><button class="btn btn-small btn-danger-quiet" onclick="deleteBook(${book.id})">Delete</button></td></tr>`).join('')}</tbody></table>`;
+            } catch (error) { container.innerHTML = `<div class="alert alert-error">${error.message}</div>`; }
+        }
+
+        async function loadUsers() {
+            try {
+                allUsersData = await AdminAPI.getAllUsers();
+                renderStudents();
+                renderLibrarians();
+            } catch (error) {
+                document.getElementById('studentsTable').innerHTML = `<div class="alert alert-error">Failed to load students: ${error.message}</div>`;
+                document.getElementById('librariansTable').innerHTML = `<div class="alert alert-error">Failed to load librarians: ${error.message}</div>`;
+            }
+        }
+
+        function renderStudents() {
+            const container = document.getElementById('studentsTable');
+            const searchVal = (document.getElementById('studentSearchInput')?.value || '').toLowerCase();
+
+            let students = allUsersData.filter(u => u.role === 1 || u.role === 'User');
+
+            if (searchVal) {
+                students = students.filter(s =>
+                    (s.fullName || '').toLowerCase().includes(searchVal) ||
+                    (s.email || '').toLowerCase().includes(searchVal) ||
+                    (s.phone || '').toLowerCase().includes(searchVal)
+                );
+            }
+
+            if (students.length === 0) {
+                UI.showEmptyState('studentsTable', searchVal ? 'No matching students found' : 'No students registered yet');
+                document.getElementById('studentsPagination').innerHTML = '';
+                return;
+            }
+
+            // Pagination logic
+            const totalPages = Math.ceil(students.length / pageSize);
+            if (currentPage > totalPages) currentPage = totalPages;
+            if (currentPage < 1) currentPage = 1;
+
+            const startIndex = (currentPage - 1) * pageSize;
+            const pagedStudents = students.slice(startIndex, startIndex + pageSize);
+
+            container.innerHTML = `<table><thead><tr><th>StudentID</th><th>StudentName</th><th>Email</th><th>Phone</th><th>Actions</th></tr></thead><tbody>${pagedStudents.map(user => `<tr><td class="muted-cell">${user.id}</td><td class="title-cell">${user.fullName}</td><td>${user.email}</td><td>${user.phone || '—'}</td><td class="table-actions"><button class="btn btn-small btn-warning-quiet" onclick="editUser(${user.id})">Edit</button><button class="btn btn-small btn-danger-quiet" onclick="deleteUser(${user.id})">Delete</button></td></tr>`).join('')}</tbody></table>`;
+
+            // Render pagination controls matching the image style
+            let pageBtns = '';
+            for (let i = 1; i <= totalPages; i++) {
+                pageBtns += `<button class="page-num ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+            }
+
+            document.getElementById('studentsPagination').innerHTML = `
+                <button class="page-nav" ${currentPage === 1 ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})">Previous</button>
+                ${pageBtns}
+                <button class="page-nav" ${currentPage === totalPages ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})">Next</button>
+            `;
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            renderStudents();
+        }
+
+        function renderLibrarians() {
+            const container = document.getElementById('librariansTable');
+            const librarians = allUsersData.filter(u => u.role === 0 || u.role === 'Admin');
+
+            if (librarians.length === 0) { UI.showEmptyState('librariansTable', 'No librarians added yet'); return; }
+            container.innerHTML = `<table><thead><tr><th>LibrarianID</th><th>Name</th><th>Email</th><th>Phone</th><th>Actions</th></tr></thead><tbody>${librarians.map(user => `<tr><td class="muted-cell">${user.id}</td><td class="title-cell">${user.fullName}</td><td>${user.email}</td><td>${user.phone || '—'}</td><td class="table-actions"><button class="btn btn-small btn-warning-quiet" onclick="editUser(${user.id})">Edit</button><button class="btn btn-small btn-danger-quiet" onclick="deleteUser(${user.id})">Delete</button></td></tr>`).join('')}</tbody></table>`;
+        }
+
+        async function loadNewspapers() {
+            const container = document.getElementById('newspapersTable');
+            try {
+                const newspapers = await AdminAPI.getNewspapers();
+                if (newspapers.length === 0) { UI.showEmptyState('newspapersTable', 'No newspapers listed yet'); return; }
+                container.innerHTML = `<table><thead><tr><th>ID</th><th>Title</th><th>Publisher</th><th>Language</th><th>Date</th><th>Copies</th><th>Actions</th></tr></thead><tbody>${newspapers.map(np => `<tr><td class="muted-cell">#${np.id}</td><td class="title-cell">${np.title}</td><td>${np.publisher}</td><td>${np.language}</td><td>${UI.formatDate(np.publicationDate)}</td><td>${np.copies}</td><td class="table-actions"><button class="btn btn-small btn-warning-quiet" onclick="openEditNewspaperModal(${np.id})">Edit</button><button class="btn btn-small btn-danger-quiet" onclick="deleteNewspaper(${np.id})">Delete</button></td></tr>`).join('')}</tbody></table>`;
+            } catch (error) { container.innerHTML = `<div class="alert alert-error">Failed to load newspapers: ${error.message}</div>`; }
+        }
+
+        async function loadMagazines() {
+            const container = document.getElementById('magazinesTable');
+            try {
+                const magazines = await AdminAPI.getMagazines();
+                if (magazines.length === 0) { UI.showEmptyState('magazinesTable', 'No magazines listed yet'); return; }
+                container.innerHTML = `<table><thead><tr><th>ID</th><th>Title</th><th>Category</th><th>Publisher</th><th>Issue</th><th>Year</th><th>Copies</th><th>Actions</th></tr></thead><tbody>${magazines.map(mag => `<tr><td class="muted-cell">#${mag.id}</td><td class="title-cell">${mag.title}</td><td>${mag.category}</td><td>${mag.publisher}</td><td>${mag.issueNumber}</td><td>${mag.publishedYear}</td><td>${mag.copies}</td><td class="table-actions"><button class="btn btn-small btn-warning-quiet" onclick="openEditMagazineModal(${mag.id})">Edit</button><button class="btn btn-small btn-danger-quiet" onclick="deleteMagazine(${mag.id})">Delete</button></td></tr>`).join('')}</tbody></table>`;
+            } catch (error) { container.innerHTML = `<div class="alert alert-error">Failed to load magazines: ${error.message}</div>`; }
+        }
+
+        async function loadTransactions() {
+            const container = document.getElementById('transactionsTable');
+            try {
+                const transactions = await AdminAPI.getAllTransactions();
+                if (transactions.length === 0) { UI.showEmptyState('transactionsTable', 'No loan activity yet'); return; }
+                container.innerHTML = `<table><thead><tr><th>Reader</th><th>Book</th><th>Borrowed</th><th>Due back</th><th>Returned</th><th>Status</th><th><span class="sr-only">Actions</span></th></tr></thead><tbody>${transactions.map(t => `<tr><td>${t.user?.fullName || 'N/A'}</td><td class="title-cell">${t.book?.title || 'N/A'}</td><td>${UI.formatDate(t.issueDate)}</td><td>${UI.formatDate(t.dueDate)}</td><td>${UI.formatDate(t.returnDate)}</td><td>${UI.formatStatus(t.status)}</td><td class="table-actions">${(t.status === 1 || t.status === 'Issued') ? `<button class="btn btn-small btn-success" onclick="returnBookAdmin(${t.id})">Mark Returned</button>` : '<span class="muted-cell">—</span>'}</td></tr>`).join('')}</tbody></table>`;
+            } catch (error) { container.innerHTML = `<div class="alert alert-error">Failed to load activity: ${error.message}</div>`; }
+        }
+
+        async function returnBookAdmin(transactionId) {
+            if (!confirm('Mark this book as returned to the library?')) return;
+            try {
+                const response = await AdminAPI.returnBook(transactionId);
+                UI.showAlert(response.message || 'Book returned successfully!', 'success');
+                loadDashboard();
+            } catch (error) { UI.showAlert(error.message, 'error'); }
+        }
+
+        // --- BOOK HANDLERS ---
+        function openAddBookModal() {
+            document.getElementById('add-book').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        document.getElementById('addBookForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                await AdminAPI.addBook(bookTitle.value, bookAuthor.value, bookISBN.value, parseInt(bookCopies.value), parseInt(bookYear.value));
+                UI.showAlert('Book added successfully!', 'success');
+                e.currentTarget.reset();
+                loadDashboard();
+            } catch (error) { UI.showAlert(error.message, 'error'); }
+        });
+
+        function openEditModal(bookId) {
+            AdminAPI.getBooks().then(books => {
+                const book = books.find(b => b.id === bookId);
+                if (!book) return;
+                editBookId.value = book.id; editBookTitle.value = book.title; editBookAuthor.value = book.author; editBookISBN.value = book.isbn; editBookCopies.value = book.totalCopies; editBookYear.value = book.publishedYear;
+                document.getElementById('editBookModal').classList.add('active');
+            });
+        }
+
+        document.getElementById('editBookForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                await AdminAPI.updateBook(parseInt(editBookId.value), editBookTitle.value, editBookAuthor.value, editBookISBN.value, parseInt(editBookCopies.value), parseInt(editBookYear.value));
+                UI.showAlert('Book updated successfully!', 'success'); closeModal('editBookModal'); loadDashboard();
+            } catch (error) { UI.showAlert(error.message, 'error'); }
+        });
+
+        async function deleteBook(id) { if (confirm('Remove this book from the catalogue?')) { try { await AdminAPI.deleteBook(id); UI.showAlert('Book deleted successfully!', 'success'); loadDashboard(); } catch (error) { UI.showAlert(error.message, 'error'); } } }
+
+        // --- USER / STUDENT / LIBRARIAN HANDLERS ---
+        function openUserModal(role = 0, user = null) {
+            const roleName = role === 0 ? 'Student' : 'Librarian';
+            document.getElementById('userModalEyebrow').textContent = role === 0 ? 'Student Account' : 'Staff Account';
+            document.getElementById('userModalTitle').textContent = user ? `Edit ${roleName}` : `Add New ${roleName}`;
+            document.getElementById('userId').value = user ? user.id : '';
+            document.getElementById('userRole').value = role;
+            document.getElementById('userFullName').value = user ? user.fullName : '';
+            document.getElementById('userEmail').value = user ? user.email : '';
+            document.getElementById('userPhone').value = user ? (user.phone || '') : '';
+            document.getElementById('userPassword').value = '';
+            document.getElementById('userModal').classList.add('active');
+        }
+
+        function editUser(userId) {
+            const user = allUsersData.find(u => u.id === userId);
+            if (!user) return;
+            const roleNum = (user.role === 'Admin' || user.role === 0) ? 1 : 0;
+            openUserModal(roleNum, user);
+        }
+
+        document.getElementById('userForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('userId').value;
+            const role = parseInt(document.getElementById('userRole').value);
+            const fullName = document.getElementById('userFullName').value;
+            const email = document.getElementById('userEmail').value;
+            const phone = document.getElementById('userPhone').value;
+            const password = document.getElementById('userPassword').value;
+
+            try {
+                if (id) {
+                    await AdminAPI.updateUser(id, fullName, email, phone, role, password || undefined);
+                    UI.showAlert('Account updated successfully!', 'success');
+                } else {
+                    if (!password) { UI.showAlert('Password is required for new accounts', 'error'); return; }
+                    await AdminAPI.addUser(fullName, email, phone, password, role);
+                    UI.showAlert('Account created successfully!', 'success');
+                }
+                closeModal('userModal');
+                loadDashboard();
+            } catch (error) { UI.showAlert(error.message, 'error'); }
+        });
+
+        async function deleteUser(id) {
+            if (confirm('Remove this account from the library system?')) {
+                try { await AdminAPI.deleteUser(id); UI.showAlert('Account removed successfully!', 'success'); loadDashboard(); }
+                catch (error) { UI.showAlert(error.message, 'error'); }
+            }
+        }
+
+        // --- NEWSPAPER HANDLERS ---
+        function openNewspaperModal(np = null) {
+            document.getElementById('newspaperModalTitle').textContent = np ? 'Edit Newspaper' : 'Add Newspaper';
+            document.getElementById('newspaperId').value = np ? np.id : '';
+            document.getElementById('npTitle').value = np ? np.title : '';
+            document.getElementById('npPublisher').value = np ? np.publisher : '';
+            document.getElementById('npLanguage').value = np ? np.language : 'English';
+            document.getElementById('npCopies').value = np ? np.copies : 1;
+            document.getElementById('npDate').value = np ? np.publicationDate.split('T')[0] : new Date().toISOString().split('T')[0];
+            document.getElementById('newspaperModal').classList.add('active');
+        }
+
+        async function openEditNewspaperModal(id) {
+            const list = await AdminAPI.getNewspapers();
+            const np = list.find(n => n.id === id);
+            if (np) openNewspaperModal(np);
+        }
+
+        document.getElementById('newspaperForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('newspaperId').value;
+            const title = document.getElementById('npTitle').value;
+            const publisher = document.getElementById('npPublisher').value;
+            const language = document.getElementById('npLanguage').value;
+            const copies = document.getElementById('npCopies').value;
+            const publicationDate = document.getElementById('npDate').value;
+
+            try {
+                if (id) {
+                    await AdminAPI.updateNewspaper(id, title, publisher, language, publicationDate, copies);
+                    UI.showAlert('Newspaper updated successfully!', 'success');
+                } else {
+                    await AdminAPI.addNewspaper(title, publisher, language, publicationDate, copies);
+                    UI.showAlert('Newspaper added successfully!', 'success');
+                }
+                closeModal('newspaperModal');
+                loadNewspapers();
+            } catch (error) { UI.showAlert(error.message, 'error'); }
+        });
+
+        async function deleteNewspaper(id) {
+            if (confirm('Delete this newspaper entry?')) {
+                try { await AdminAPI.deleteNewspaper(id); UI.showAlert('Newspaper deleted!', 'success'); loadNewspapers(); }
+                catch (error) { UI.showAlert(error.message, 'error'); }
+            }
+        }
+
+        // --- MAGAZINE HANDLERS ---
+        function openMagazineModal(mag = null) {
+            document.getElementById('magazineModalTitle').textContent = mag ? 'Edit Magazine' : 'Add Magazine';
+            document.getElementById('magazineId').value = mag ? mag.id : '';
+            document.getElementById('magTitle').value = mag ? mag.title : '';
+            document.getElementById('magCategory').value = mag ? mag.category : '';
+            document.getElementById('magPublisher').value = mag ? mag.publisher : '';
+            document.getElementById('magIssue').value = mag ? mag.issueNumber : '';
+            document.getElementById('magYear').value = mag ? mag.publishedYear : new Date().getFullYear();
+            document.getElementById('magCopies').value = mag ? mag.copies : 1;
+            document.getElementById('magazineModal').classList.add('active');
+        }
+
+        async function openEditMagazineModal(id) {
+            const list = await AdminAPI.getMagazines();
+            const mag = list.find(m => m.id === id);
+            if (mag) openMagazineModal(mag);
+        }
+
+        document.getElementById('magazineForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('magazineId').value;
+            const title = document.getElementById('magTitle').value;
+            const category = document.getElementById('magCategory').value;
+            const publisher = document.getElementById('magPublisher').value;
+            const issueNumber = document.getElementById('magIssue').value;
+            const publishedYear = document.getElementById('magYear').value;
+            const copies = document.getElementById('magCopies').value;
+
+            try {
+                if (id) {
+                    await AdminAPI.updateMagazine(id, title, category, publisher, issueNumber, publishedYear, copies);
+                    UI.showAlert('Magazine updated successfully!', 'success');
+                } else {
+                    await AdminAPI.addMagazine(title, category, publisher, issueNumber, publishedYear, copies);
+                    UI.showAlert('Magazine added successfully!', 'success');
+                }
+                closeModal('magazineModal');
+                loadMagazines();
+            } catch (error) { UI.showAlert(error.message, 'error'); }
+        });
+
+        async function deleteMagazine(id) {
+            if (confirm('Delete this magazine entry?')) {
+                try { await AdminAPI.deleteMagazine(id); UI.showAlert('Magazine deleted!', 'success'); loadMagazines(); }
+                catch (error) { UI.showAlert(error.message, 'error'); }
+            }
+        }
+
+        function closeModal(modalId) { document.getElementById(modalId).classList.remove('active'); }
+
+        document.getElementById('studentSearchInput')?.addEventListener('input', () => {
+            currentPage = 1;
+            renderStudents();
+        });
+
+        loadDashboard();
+    </script>
+</body>
+</html>

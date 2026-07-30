@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+    <title>Library — Sign In</title>
+    <link rel="stylesheet" href="style.css?v=20260731">
+</head>
+<body class="auth-page">
+    <main class="auth-layout">
+        <section class="auth-story" aria-label="Leafline Library introduction">
+            <a class="brand brand-light" href="/index.html" aria-label="Library home">
+                <span class="brand-mark" aria-hidden="true">
+                    <svg viewBox="0 0 32 32" fill="none"><path d="M7 6.5c3.4-1.2 6.3-.6 9 1.7v17.3c-2.7-2.3-5.6-2.9-9-1.7V6.5Z" fill="currentColor"/><path d="M25 6.5c-3.4-1.2-6.3-.6-9 1.7v17.3c2.7-2.3 5.6-2.9 9-1.7V6.5Z" fill="currentColor" opacity=".6"/><path d="M16 8.2v17.3" stroke="currentColor" stroke-width="1.5"/></svg>
+                </span>
+                <span>Library</span>
+            </a>
+
+            <div class="auth-story-copy">
+                <p class="eyebrow eyebrow-light">Library Management System</p>
+                <h1>Efficient library management, simplified.</h1>
+                <p class="lead">Discover, borrow, and manage books with ease. A streamlined system for readers and administrators.</p>
+            </div>
+
+            <div class="story-shelf" aria-hidden="true">
+                <span class="shelf-book book-copper"></span>
+                <span class="shelf-book book-cream"></span>
+                <span class="shelf-book book-teal"></span>
+                <span class="shelf-book book-paper"></span>
+                <span class="shelf-book book-copper book-tall"></span>
+                <span class="shelf-book book-cream"></span>
+                <span class="shelf-book book-teal book-short"></span>
+                <i></i>
+            </div>
+
+            <div class="auth-proof">
+                <div><strong>One place</strong><span>for every chapter</span></div>
+                <div class="proof-line"></div>
+                <div><strong>Made for readers</strong><span>and library teams</span></div>
+            </div>
+        </section>
+
+        <section class="auth-panel">
+            <div class="auth-card">
+                <div class="auth-mobile-brand">
+                    <a class="brand" href="/index.html"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><path d="M7 6.5c3.4-1.2 6.3-.6 9 1.7v17.3c-2.7-2.3-5.6-2.9-9-1.7V6.5Z" fill="currentColor"/><path d="M25 6.5c-3.4-1.2-6.3-.6-9 1.7v17.3c2.7-2.3 5.6-2.9 9-1.7V6.5Z" fill="currentColor" opacity=".6"/></svg></span><span>Library</span></a>
+                </div>
+                <div class="auth-heading">
+                    <p class="eyebrow">Account Access</p>
+                    <h2>Sign in to your account</h2>
+                    <p>Enter your credentials to access the library system, or create a new account.</p>
+                </div>
+
+                <div class="tabs auth-tabs" role="tablist" aria-label="Account options">
+                    <button class="tab active" type="button" data-tab="login" role="tab" aria-selected="true">Sign in</button>
+                    <button class="tab" type="button" data-tab="register" role="tab" aria-selected="false">Create account</button>
+                </div>
+
+                <form id="loginForm" novalidate>
+                    <div class="form-group">
+                        <label for="loginEmail">Email address</label>
+                        <div class="input-shell">
+                            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M3.5 6.5h17v11h-17z" stroke="currentColor" stroke-width="1.7"/><path d="m4.5 7.5 7.5 5 7.5-5" stroke="currentColor" stroke-width="1.7"/></svg>
+                            <input type="email" id="loginEmail" name="email" placeholder="you@example.com" autocomplete="email" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="label-row"><label for="loginPassword">Password</label><span>At least 6 characters</span></div>
+                        <div class="input-shell">
+                            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="1.7"/></svg>
+                            <input type="password" id="loginPassword" name="password" placeholder="Enter your password" autocomplete="current-password" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Sign In <span aria-hidden="true">→</span></button>
+                </form>
+
+                <form id="registerForm" style="display: none;" novalidate>
+                    <div class="form-group">
+                        <label for="registerFullName">Full name</label>
+                        <div class="input-shell"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.25" stroke="currentColor" stroke-width="1.7"/><path d="M5.5 20c.7-3 3-4.5 6.5-4.5s5.8 1.5 6.5 4.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><input type="text" id="registerFullName" name="fullName" placeholder="Your name" autocomplete="name" required></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail">Email address</label>
+                        <div class="input-shell"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M3.5 6.5h17v11h-17z" stroke="currentColor" stroke-width="1.7"/><path d="m4.5 7.5 7.5 5 7.5-5" stroke="currentColor" stroke-width="1.7"/></svg><input type="email" id="registerEmail" name="email" placeholder="you@example.com" autocomplete="email" required></div>
+                    </div>
+                    <div class="form-group split-fields">
+                        <div><label for="registerPassword">Password</label><div class="input-shell"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="1.7"/></svg><input type="password" id="registerPassword" name="password" placeholder="6+ characters" autocomplete="new-password" required minlength="6"></div></div>
+                        <div><label for="registerConfirmPassword">Confirm password</label><div class="input-shell"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M12 3v18M7 8l5-5 5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><input type="password" id="registerConfirmPassword" name="confirmPassword" placeholder="Repeat password" autocomplete="new-password" required minlength="6"></div></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Create Account <span aria-hidden="true">→</span></button>
+                </form>
+
+                <p class="form-note">By continuing, you agree to use this library account responsibly.</p>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js?v=20260730"></script>
+    <script>
+        const tabs = document.querySelectorAll('.tab');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => {
+                    t.classList.remove('active');
+                    t.setAttribute('aria-selected', 'false');
+                });
+                tab.classList.add('active');
+                tab.setAttribute('aria-selected', 'true');
+                const isLogin = tab.dataset.tab === 'login';
+                loginForm.style.display = isLogin ? 'block' : 'none';
+                registerForm.style.display = isLogin ? 'none' : 'block';
+            });
+        });
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            try {
+                const response = await AuthAPI.login(email, password);
+                TokenManager.setToken(response.token);
+                window.location.href = response.role === 'Admin' ? '/admin-dashboard.html' : '/user-dashboard.html';
+            } catch (error) {
+                UI.showAlert(error.message, 'error');
+            }
+        });
+
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fullName = document.getElementById('registerFullName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerConfirmPassword').value;
+            if (password !== confirmPassword) {
+                UI.showAlert('Passwords do not match', 'error');
+                return;
+            }
+            try {
+                await AuthAPI.register(fullName, email, password);
+                UI.showAlert('Registration successful! Please sign in.', 'success');
+                tabs[0].click();
+                registerForm.reset();
+            } catch (error) {
+                UI.showAlert(error.message, 'error');
+            }
+        });
+
+        if (TokenManager.isAuthenticated()) {
+            const userInfo = TokenManager.getUserInfo();
+            window.location.href = userInfo?.role === 'Admin' ? '/admin-dashboard.html' : '/user-dashboard.html';
+        }
+    </script>
+</body>
+</html>

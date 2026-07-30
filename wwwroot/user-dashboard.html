@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+    <title>User Dashboard — Library</title>
+    <link rel="stylesheet" href="style.css?v=20260731">
+</head>
+
+<body class="app-page reader-page">
+    <header class="app-header">
+        <div class="container header-content">
+            <a class="brand" href="/user-dashboard.html" aria-label="Library home">
+                <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none">
+                        <path d="M7 6.5c3.4-1.2 6.3-.6 9 1.7v17.3c-2.7-2.3-5.6-2.9-9-1.7V6.5Z" fill="currentColor" />
+                        <path d="M25 6.5c-3.4-1.2-6.3-.6-9 1.7v17.3c2.7-2.3 5.6-2.9 9-1.7V6.5Z" fill="currentColor"
+                            opacity=".6" />
+                    </svg></span>
+                <span>Library</span>
+            </a>
+            <nav class="header-nav" aria-label="Library Navigation">
+                <a href="#" onclick="switchTab('books')">Books</a>
+                <a href="#" onclick="switchTab('newspapers')">Newspapers</a>
+                <a href="#" onclick="switchTab('magazines')">Magazines</a>
+                <a href="#" onclick="switchTab('transactions')">My Reading</a>
+            </nav>
+            <div class="account-actions">
+                <div class="account-pill"><span class="avatar" id="userAvatar" aria-hidden="true">R</span><span
+                        id="userInfo">My account</span></div>
+                <button class="btn btn-quiet" type="button" onclick="AuthAPI.logout()">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container dashboard app-main">
+        <section class="reader-hero">
+            <div>
+                <p class="eyebrow">User Dashboard</p>
+                <h1>Welcome to the <span>Library Catalogue</span></h1>
+                <p>Browse books, newspapers, and magazines, and track your borrowed titles.</p>
+            </div>
+            <div class="reader-hero-art" aria-hidden="true">
+                <svg viewBox="0 0 260 190" fill="none">
+                    <path d="M48 151h164" stroke="currentColor" stroke-width="5" stroke-linecap="round" />
+                    <path d="M71 71h40v78H71z" fill="currentColor" opacity=".9" />
+                    <path d="M115 45h35v104h-35z" fill="currentColor" opacity=".6" />
+                    <path d="M154 82h24v67h-24z" fill="currentColor" opacity=".38" />
+                    <path d="M65 74h6v72h-6zM109 48h6v98h-6zM148 49h6v97h-6zM178 85h6v61h-6z" fill="#f8f4ec"
+                        opacity=".8" />
+                    <path d="M55 107c-19-2-29-17-25-33 4-16 19-25 35-22 3 20-1 40-10 55Z" fill="currentColor"
+                        opacity=".28" />
+                    <path d="M48 113c4-21 10-38 22-54" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        opacity=".6" />
+                </svg>
+            </div>
+        </section>
+
+        <div class="tabs reader-tabs" role="tablist" aria-label="Library views">
+            <button class="tab active" type="button" data-tab="books" role="tab" aria-selected="true"
+                onclick="switchTab('books')">Books</button>
+            <button class="tab" type="button" data-tab="newspapers" role="tab" aria-selected="false"
+                onclick="switchTab('newspapers')">Newspapers</button>
+            <button class="tab" type="button" data-tab="magazines" role="tab" aria-selected="false"
+                onclick="switchTab('magazines')">Magazines</button>
+            <button class="tab" type="button" data-tab="transactions" role="tab" aria-selected="false"
+                onclick="switchTab('transactions')">My Reading</button>
+        </div>
+
+        <!-- Books Tab -->
+        <section id="booksTab">
+            <div class="catalogue-toolbar">
+                <div>
+                    <p class="eyebrow">Explore</p>
+                    <h2>Books Catalogue</h2>
+                    <p>Find and borrow books from our digital shelves.</p>
+                </div>
+                <label class="search-bar" for="searchInput"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+                        <circle cx="10.5" cy="10.5" r="5.5" stroke="currentColor" stroke-width="1.8" />
+                        <path d="m15 15 4.2 4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                    </svg><input type="search" id="searchInput" placeholder="Search by title, author, or ISBN..."
+                        autocomplete="off"></label>
+            </div>
+            <div id="booksGrid" class="book-grid">
+                <div class="loading"><span class="loading-mark" aria-hidden="true"></span>Gathering the books…</div>
+            </div>
+        </section>
+
+        <!-- Newspapers Tab -->
+        <section id="newspapersTab" style="display: none;">
+            <div class="panel table-container">
+                <div class="table-header">
+                    <div>
+                        <p class="eyebrow">Periodicals</p>
+                        <h2>Daily Newspapers</h2>
+                        <p>Today's news and archives.</p>
+                    </div>
+                </div>
+                <div id="newspapersTable">
+                    <div class="loading"><span class="loading-mark" aria-hidden="true"></span>Loading newspapers…</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Magazines Tab -->
+        <section id="magazinesTab" style="display: none;">
+            <div class="panel table-container">
+                <div class="table-header">
+                    <div>
+                        <p class="eyebrow">Publications</p>
+                        <h2>Popular Magazines</h2>
+                        <p>Featured issues and collections.</p>
+                    </div>
+                </div>
+                <div id="magazinesTable">
+                    <div class="loading"><span class="loading-mark" aria-hidden="true"></span>Loading magazines…</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Transactions / Reading History Tab -->
+        <section id="transactionsTab" style="display: none;">
+            <div class="panel table-container reader-history">
+                <div class="table-header">
+                    <div>
+                        <p class="eyebrow">My Shelf</p>
+                        <h2>Reading History & Active Loans</h2>
+                        <p>Every borrowed book, all in one place.</p>
+                    </div>
+                    <span class="heading-art small-art" aria-hidden="true"><svg viewBox="0 0 80 80" fill="none">
+                            <path d="M22 21h14v40H22zM42 16h16v45H42zM61 29h8v32h-8z" fill="currentColor" />
+                            <path d="M17 63h54" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+                        </svg></span>
+                </div>
+                <div id="transactionsTable">
+                    <div class="loading"><span class="loading-mark" aria-hidden="true"></span>Loading reading history…
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js?v=20260730"></script>
+    <script>
+        if (!checkUserAuth()) window.location.href = '/index.html';
+
+        const userInfo = TokenManager.getUserInfo();
+        const displayName = userInfo?.fullName || 'Reader';
+        document.getElementById('userInfo').textContent = displayName;
+        document.getElementById('userAvatar').textContent = displayName.slice(0, 1).toUpperCase();
+
+        let myActiveTransactions = [];
+
+        function switchTab(tabName) {
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(t => {
+                const isActive = t.dataset.tab === tabName;
+                t.classList.toggle('active', isActive);
+                t.setAttribute('aria-selected', isActive ? 'true' : 'false');
+            });
+
+            document.getElementById('booksTab').style.display = tabName === 'books' ? 'block' : 'none';
+            document.getElementById('newspapersTab').style.display = tabName === 'newspapers' ? 'block' : 'none';
+            document.getElementById('magazinesTab').style.display = tabName === 'magazines' ? 'block' : 'none';
+            document.getElementById('transactionsTab').style.display = tabName === 'transactions' ? 'block' : 'none';
+
+            if (tabName === 'newspapers') loadNewspapers();
+            if (tabName === 'magazines') loadMagazines();
+            if (tabName === 'transactions') loadTransactions();
+        }
+
+        async function loadBooks(searchTerm = '') {
+            const container = document.getElementById('booksGrid');
+            try {
+                const [booksRes, myTransRes] = await Promise.all([
+                    UserAPI.getAvailableBooks(),
+                    UserAPI.getMyTransactions().catch(() => [])
+                ]);
+
+                myActiveTransactions = myTransRes.filter(t => t.status === 'Issued' || t.status === 1);
+                let books = booksRes;
+
+                if (searchTerm) {
+                    const term = searchTerm.toLowerCase();
+                    books = books.filter(book => book.title.toLowerCase().includes(term) || book.author.toLowerCase().includes(term) || book.isbn.toLowerCase().includes(term));
+                }
+                if (books.length === 0) { UI.showEmptyState('booksGrid', searchTerm ? 'No books match that search' : 'No books are available right now'); return; }
+
+                container.innerHTML = books.map((book, index) => {
+                    const activeLoan = myActiveTransactions.find(t => t.bookId === book.id || t.bookTitle === book.title);
+                    let actionBtn = '';
+                    if (activeLoan) {
+                        actionBtn = `<button class="btn btn-success btn-block" onclick="returnBook(${activeLoan.id})">Return this book ✓</button>`;
+                    } else if (book.availableCopies > 0) {
+                        actionBtn = `<button class="btn btn-primary btn-block" onclick="borrowBook(${book.id})">Borrow this book <span aria-hidden="true">→</span></button>`;
+                    } else {
+                        actionBtn = `<button class="btn btn-quiet btn-block" disabled>Currently unavailable</button>`;
+                    }
+
+                    return `<article class="book-card">
+                        <div class="book-spine spine-${index % 4}" aria-hidden="true"><span>${book.publishedYear}</span></div>
+                        <div class="book-card-content">
+                            <p class="book-kicker">${activeLoan ? 'Currently in your shelf' : 'Available to borrow'}</p>
+                            <h3>${book.title}</h3>
+                            <p class="author">${book.author}</p>
+                            <div class="book-meta"><span>ISBN ${book.isbn}</span><span>${book.publishedYear}</span></div>
+                            <div class="copies"><span>On the shelf</span><span class="${book.availableCopies > 0 ? 'available' : 'unavailable'}">${book.availableCopies} copy${book.availableCopies === 1 ? '' : 'ies'}</span></div>
+                        </div>
+                        <div class="book-card-actions">${actionBtn}</div>
+                    </article>`;
+                }).join('');
+            } catch (error) { container.innerHTML = `<div class="alert alert-error">Failed to load books: ${error.message}</div>`; }
+        }
+
+        async function loadNewspapers() {
+            const container = document.getElementById('newspapersTable');
+            try {
+                const newspapers = await UserAPI.getNewspapers();
+                if (newspapers.length === 0) { UI.showEmptyState('newspapersTable', 'No newspapers available'); return; }
+                container.innerHTML = `<table><thead><tr><th>Title</th><th>Publisher</th><th>Language</th><th>Publication Date</th><th>Available Copies</th></tr></thead><tbody>${newspapers.map(np => `<tr><td class="title-cell">${np.title}</td><td>${np.publisher}</td><td>${np.language}</td><td>${UI.formatDate(np.publicationDate)}</td><td><span class="badge badge-info">${np.copies} copies</span></td></tr>`).join('')}</tbody></table>`;
+            } catch (error) { container.innerHTML = `<div class="alert alert-error">Failed to load newspapers: ${error.message}</div>`; }
+        }
+
+        async function loadMagazines() {
+            const container = document.getElementById('magazinesTable');
+            try {
+                const magazines = await UserAPI.getMagazines();
+                if (magazines.length === 0) { UI.showEmptyState('magazinesTable', 'No magazines available'); return; }
+                container.innerHTML = `<table><thead><tr><th>Title</th><th>Category</th><th>Publisher</th><th>Issue</th><th>Year</th><th>Available Copies</th></tr></thead><tbody>${magazines.map(mag => `<tr><td class="title-cell">${mag.title}</td><td><span class="badge badge-info">${mag.category}</span></td><td>${mag.publisher}</td><td>${mag.issueNumber}</td><td>${mag.publishedYear}</td><td><span class="badge badge-success">${mag.copies} copies</span></td></tr>`).join('')}</tbody></table>`;
+            } catch (error) { container.innerHTML = `<div class="alert alert-error">Failed to load magazines: ${error.message}</div>`; }
+        }
+
+        async function loadTransactions() {
+            const container = document.getElementById('transactionsTable');
+            try {
+                const transactions = await UserAPI.getMyTransactions();
+                if (transactions.length === 0) { UI.showEmptyState('transactionsTable', 'Your reading shelf is waiting for its first book'); return; }
+                container.innerHTML = `<table><thead><tr><th>Book</th><th>Author</th><th>Borrowed</th><th>Due back</th><th>Returned</th><th>Status</th><th><span class="sr-only">Actions</span></th></tr></thead><tbody>${transactions.map(t => `<tr class="${t.isOverdue ? 'overdue' : ''}"><td class="title-cell">${t.bookTitle || 'N/A'}</td><td>${t.bookAuthor || 'N/A'}</td><td>${UI.formatDate(t.issueDate)}</td><td>${UI.formatDate(t.dueDate)}${t.isOverdue ? ' <span class="badge badge-danger">Overdue</span>' : ''}</td><td>${UI.formatDate(t.returnDate)}</td><td>${UI.formatStatus(t.status)}</td><td class="table-actions">${(t.status === 'Issued' || t.status === 1) ? `<button class="btn btn-small btn-success" onclick="returnBook(${t.id})">Return Book</button>` : '<span class="muted-cell">—</span>'}</td></tr>`).join('')}</tbody></table>`;
+            } catch (error) { container.innerHTML = `<div class="alert alert-error">Failed to load reading history: ${error.message}</div>`; }
+        }
+
+        async function borrowBook(bookId) {
+            if (!confirm('Borrow this book from the library?')) return;
+            try { const response = await UserAPI.borrowBook(bookId); UI.showAlert(response.message || 'Book borrowed successfully!', 'success'); loadBooks(searchInput.value); }
+            catch (error) { UI.showAlert(error.message, 'error'); }
+        }
+
+        async function returnBook(transactionId) {
+            if (!confirm('Mark this book as returned to the library?')) return;
+            try {
+                const response = await UserAPI.returnBook(transactionId);
+                UI.showAlert(response.message || 'Book returned successfully!', 'success');
+                loadBooks(searchInput.value);
+                loadTransactions();
+            }
+            catch (error) { UI.showAlert(error.message, 'error'); }
+        }
+
+        document.getElementById('searchInput').addEventListener('input', e => loadBooks(e.target.value));
+        loadBooks();
+    </script>
+</body>
+
+</html>
