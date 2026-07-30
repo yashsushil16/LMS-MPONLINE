@@ -32,7 +32,7 @@ def style_header_footer(doc):
         header = section.header
         hp = header.paragraphs[0]
         hp.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-        hrun = hp.add_run("IEEE Project Report | Library Management System")
+        hrun = hp.add_run("MPOnline Advanced Software Engineering Internship | IEEE Project Report")
         hrun.font.name = "Times New Roman"
         hrun.font.size = Pt(9)
         hrun.font.color.rgb = RGBColor(0x00, 0x00, 0x00)
@@ -41,10 +41,11 @@ def style_header_footer(doc):
         footer = section.footer
         fp = footer.paragraphs[0]
         fp.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        frun = fp.add_run("Library Management System (LMS)")
+        frun = fp.add_run("Developer: Yash Sushil (App No: IN26014565) | Library Management System (LMS)")
         frun.font.name = "Times New Roman"
         frun.font.size = Pt(9)
         frun.font.color.rgb = RGBColor(0x00, 0x00, 0x00)
+
 
 def add_heading_1(doc, text):
     h = doc.add_paragraph()
@@ -195,7 +196,7 @@ def build_simple_ieee_report():
     
     p_sub = doc.add_paragraph()
     p_sub.paragraph_format.space_before = Pt(0)
-    p_sub.paragraph_format.space_after = Pt(18)
+    p_sub.paragraph_format.space_after = Pt(12)
     p_sub.alignment = WD_ALIGN_PARAGRAPH.CENTER
     r_sub = p_sub.add_run("IEEE Standard Software Engineering Project Report")
     r_sub.font.name = "Times New Roman"
@@ -203,17 +204,46 @@ def build_simple_ieee_report():
     r_sub.italic = True
     r_sub.font.color.rgb = RGBColor(0x00, 0x00, 0x00)
     
+    # Author & Internship Info
+    p_author = doc.add_paragraph()
+    p_author.paragraph_format.space_before = Pt(0)
+    p_author.paragraph_format.space_after = Pt(18)
+    p_author.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    
+    r_auth1 = p_author.add_run("Prepared & Developed By:\n")
+    r_auth1.font.name = "Times New Roman"
+    r_auth1.font.size = Pt(11)
+    r_auth1.italic = True
+    
+    r_auth2 = p_author.add_run("Yash Sushil\n")
+    r_auth2.font.name = "Times New Roman"
+    r_auth2.font.size = Pt(14)
+    r_auth2.bold = True
+    
+    r_auth3 = p_author.add_run("Application No.: IN26014565\n")
+    r_auth3.font.name = "Times New Roman"
+    r_auth3.font.size = Pt(11)
+    r_auth3.bold = True
+    
+    r_auth4 = p_author.add_run("MPOnline Advanced Software Engineering & Development Internship")
+    r_auth4.font.name = "Times New Roman"
+    r_auth4.font.size = Pt(11)
+    r_auth4.italic = True
+    
     # Metadata Table
     meta_headers = ["Project Attribute", "Specification Details"]
     meta_data = [
         ["Project Title", "Library Management System (LMS)"],
+        ["Developer / Intern", "Yash Sushil"],
+        ["Application No.", "IN26014565"],
+        ["Internship Program", "MPOnline Advanced Software Engineering & Development Internship"],
         ["Target Architecture", "3-Tier RESTful Web API & Single Page Application (SPA)"],
-        ["Backend Framework", ".NET 8.0 ASP.NET Core Web API with Entity Framework Core"],
+        ["Backend Framework", ".NET ASP.NET Core Web API with Entity Framework Core"],
         ["Database Engine", "SQLite Database (`library.db`)"],
         ["Security Protocol", "JWT Bearer Token Authentication & BCrypt Password Hashing"],
         ["Frontend Tech Stack", "Vanilla HTML5, CSS3 Modern Layout, ES6 JavaScript"],
         ["Report Standard", "IEEE Software Engineering Project Standard Guidelines"],
-        ["Document Date", "Academic Session 2025-2026"]
+        ["Document Date", "July 2026"]
     ]
     create_simple_table(doc, meta_headers, meta_data, [2.5, 4.0])
     
